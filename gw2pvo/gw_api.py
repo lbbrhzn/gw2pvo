@@ -41,6 +41,15 @@ class GoodWeApi:
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }
+        
+        # in case there is more than one inverter
+        nbInverters = len(data['inverter'])
+        if nbInverters > 1:
+            moreInverterData = data['inverter'][1:nbInverters]
+            for anotherInverterData in moreInverterData:
+                result['pgrid_w']  += anotherInverterData['out_pac']
+                result['eday_kwh']  += anotherInverterData['eday']
+                result['etotal_kwh']  += anotherInverterData['etotal']                                                       
 
         message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
